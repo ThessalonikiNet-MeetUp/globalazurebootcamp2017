@@ -1,0 +1,20 @@
+﻿@using System.Configuration;
+@{
+    ViewBag.Title = "Settings values";
+}
+
+<div class="row">
+  <table class="table table-striped">
+    <tr>
+      <th>Setting Name</th>
+      <th>Setting Value</th>
+    </tr>
+    @foreach (string setting in ConfigurationManager.AppSettings)
+    {
+      <tr>
+        <td>@setting</td>
+        <td>@ConfigurationManager.AppSettings[setting]</td>
+      </tr>
+    }
+  </table>
+</div>

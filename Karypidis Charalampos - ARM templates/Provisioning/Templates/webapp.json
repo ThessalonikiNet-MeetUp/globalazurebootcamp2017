@@ -1,0 +1,69 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "servicePlanName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bootcamp-planSKU": {
+      "type": "string",
+      "allowedValues": [
+        "Free",
+        "Shared",
+        "Basic",
+        "Standard"
+      ],
+      "defaultValue": "Free"
+    },
+    "bootcamp-planWorkerSize": {
+      "type": "string",
+      "allowedValues": [
+        "0",
+        "1",
+        "2"
+      ],
+      "defaultValue": "0"
+    }
+  },
+  "variables": {
+    "webppName": "[concat('bootcamp2017', '-skg')]"
+  },
+  "resources": [
+    {
+      "name": "[parameters('servicePlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2014-06-01",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "bootcamp-plan"
+      },
+      "properties": {
+        "name": "[parameters('servicePlanName')]",
+        "sku": "[parameters('bootcamp-planSKU')]",
+        "workerSize": "[parameters('bootcamp-planWorkerSize')]",
+        "numberOfWorkers": 1
+      }
+    },
+    {
+      "name": "[variables('webppName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', parameters('servicePlanName'))]"
+      ],
+      "tags": {
+        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('servicePlanName'))]": "Resource",
+        "displayName": "bootcamp2017"
+      },
+      "properties": {
+        "name": "[variables('webppName')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('servicePlanName'))]"
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
